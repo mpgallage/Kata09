@@ -28,14 +28,22 @@ public class CheckOut {
         if(!currentUnits.containsKey(SKU)) {
             currentUnits.put(SKU, 1);
             currentPrices.put(SKU, unitPrice);
+
         } else {
             int unitCount = currentUnits.get(SKU) + 1;
             currentUnits.put(SKU, unitCount);
-            int eligibleDiscountUnits = unitCount / discountUnits;
-            int remainderUnits = currentUnits.get(SKU) % discountUnits;
 
-            double price = eligibleDiscountUnits * discountPrice + remainderUnits * unitPrice;
-            currentPrices.put(SKU, price);
+            if (discountUnits == 0) {
+                double price = unitCount * unitPrice;
+                currentPrices.put(SKU, price);
+
+            } else {
+                int eligibleDiscountUnits = unitCount / discountUnits;
+                int remainderUnits = currentUnits.get(SKU) % discountUnits;
+
+                double price = eligibleDiscountUnits * discountPrice + remainderUnits * unitPrice;
+                currentPrices.put(SKU, price);
+            }
         }
 
         return currentPrices.values().stream().mapToDouble(Double::doubleValue).sum();
